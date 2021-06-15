@@ -1,24 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
-function App() {
+import PrivateRoute from './components/PrivateRoute';
+
+import Login from './components/login';
+
+import axiosWithAuth from './utils/axiosWithAuth';
+
+function App(props) {
+  const logout = () => {
+    const token = localStorage.getItem("token")
+    axiosWithAuth()
+      .post("/api/logout")
+      .then(res => {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        // this.setState({
+        //   isAuth: false
+        // })
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+  };
+
+  const isAuth = localStorage.getItem("token");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <ul>
+          <li>
+            
+            {!isAuth ? <Link to="/login">Login</Link> : <div></div>}
+          </li>
+          
+          <li>
+            {isAuth ? <Link to="/protected">Protected Page</Link> : <div></div>}
+          </li>
+          <li>
+            <Link onClick={logout}>Logout</Link>
+          </li>
+        </ul>
+
+        <Switch>
+        <Route component={Login} />
+          <PrivateRoute exact path="/protected"  />
+          <Route path="/login" component={Login} />
+         
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
