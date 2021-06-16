@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
 import PrivateRoute from './components/PrivateRoute';
 
-import Login from './components/login';
+import Login from './components/Login';
 
 import axiosWithAuth from './utils/axiosWithAuth';
 
@@ -31,10 +31,8 @@ function App(props) {
       <div className="App">
         <ul>
           <li>
-            
             {!isAuth ? <Link to="/login">Login</Link> : <div></div>}
           </li>
-          
           <li>
             {isAuth ? <Link to="/protected">Protected Page</Link> : <div></div>}
           </li>
@@ -44,10 +42,9 @@ function App(props) {
         </ul>
 
         <Switch>
+        <PrivateRoute exact path="/protected"  />
         <Route component={Login} />
-          <PrivateRoute exact path="/protected"  />
-          <Route path="/login" component={Login} />
-         
+        <Route path="/login" component={Login} /> 
         </Switch>
       </div>
     </Router>
